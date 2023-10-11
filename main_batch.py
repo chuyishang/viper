@@ -53,6 +53,10 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
                   f'    # Answer is:'
     code = code_header + code
 
+    print("===============\n")
+    print("CODE:", code)
+    print("===============\n")
+    
     try:
         exec(compile(code, 'Codex', 'exec'), globals())
     except Exception as e:
@@ -146,6 +150,8 @@ def main():
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True,
                             collate_fn=my_collate)
     input_type = dataset.input_type
+    # DEBUG:
+    print("INPUT TYPE:", input_type)
 
     all_results = []
     all_answers = []
@@ -168,6 +174,10 @@ def main():
 
                 if not config.use_cached_codex:
                     codes = codex(prompt=batch['query'], base_prompt=base_prompt)
+                    # DEBUG:
+                    print("=============\n")
+                    print("CODES:", codes)
+                    print("=============\n")
 
                 else:
                     codes = codes_all[i * batch_size:(i + 1) * batch_size]  # If cache
@@ -180,7 +190,12 @@ def main():
                         for c, sample_id, img, possible_answers, query in \
                                 zip(codes, batch['sample_id'], batch['image'], batch['possible_answers'], batch['query']):
                             result = run_program([c, sample_id, img, possible_answers, query], queues_in, input_type)
+
                             results.append(result)
+                            # DEBUG:
+                            print("=============\n")
+                            print("RESULT", result)
+                            print("=============\n")
                     else:
                         results = list(pool.imap(partial(
                             run_program, queues_in_=queues_in, input_type_=input_type),
@@ -200,6 +215,9 @@ def main():
                 all_query_types += batch['query_type']
                 all_querys += batch['query']
                 all_img_paths += [dataset.get_sample_path(idx) for idx in batch['index']]
+                # DEBUG
+                print(all_img_paths)
+                print(all_answers)
                 if i % config.log_every == 0:
                     try:
                         accuracy = datasets.accuracy(all_results, all_answers, all_possible_answers, all_query_types)
