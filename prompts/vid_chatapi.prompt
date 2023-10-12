@@ -1,0 +1,119 @@
+import math
+
+class VideoSegment:
+    """A Python class containing a set of frames represented as ImagePatch objects, as well as relevant information.
+    Attributes
+    ----------
+    video : torch.Tensor
+        A tensor of the original video.
+    start : int
+        An int describing the starting frame in this video segment with respect to the original video.
+    end : int
+        An int describing the ending frame in this video segment with respect to the original video.
+    num_frames->int
+        An int containing the number of frames in the video segment.
+
+    Methods
+    -------
+    frame_iterator->Iterator[ImagePatch]
+    trim(start, end)->VideoSegment
+        Returns a new VideoSegment containing a trimmed version of the original video at the [start, end] segment.
+    frame_iterator->Iterator[ImagePatch]
+        Returns an iterator over the frames in the video segment.
+    """
+
+    def __init__(self, video: torch.Tensor, start: int = None, end: int = None, parent_start=0, queues=None):
+        """Initializes a VideoSegment object by trimming the video at the given [start, end] times and stores the
+        start and end times as attributes. If no times are provided, the video is left unmodified, and the times are
+        set to the beginning and end of the video.
+
+        Parameters
+        -------
+        video : torch.Tensor
+            A tensor of the original video.
+        start : int
+            An int describing the starting frame in this video segment with respect to the original video.
+        end : int
+            An int describing the ending frame in this video segment with respect to the original video.
+        """
+
+        if start is None and end is None:
+            self.trimmed_video = video
+            self.start = 0
+            self.end = video.shape[0]  # duration
+        else:
+            self.trimmed_video = video[start:end]
+            if start is None:
+                start = 0
+            if end is None:
+                end = video.shape[0]
+            self.start = start + parent_start
+            self.end = end + parent_start
+
+        self.num_frames = self.trimmed_video.shape[0]
+
+    def frame_from_index(self, index) -> ImagePatch:
+        """Returns the frame at position 'index', as an ImagePatch object.
+
+        Examples
+        -------
+        >>> # Is there a foo in the frame bar appears?
+        >>> def execute_command(video)->bool:
+        >>>     video_segment = VideoSegment(video)
+        >>>     for i, frame in enumerate(video_segment.frame_iterator()):
+        >>>         if frame.exists("bar"):
+        >>>             frame_after = video_segment.frame_from_index(i+1)
+        >>>             return frame_after.exists("foo")
+        """
+        return ImagePatch(self.trimmed_video[index])
+
+    def trim(self, start: Union[int, None] = None, end: Union[int, None] = None) -> VideoSegment:
+        """Returns a new VideoSegment containing a trimmed version of the original video at the [start, end]
+        segment.
+
+        Parameters
+        ----------
+        start : Union[int, None]
+            An int describing the starting frame in this video segment with respect to the original video.
+        end : Union[int, None]
+            An int describing the ending frame in this video segment with respect to the original video.
+
+        Examples
+        --------
+        >>> # Return the second half of the video
+        >>> def execute_command(video):
+        >>>     video_segment = VideoSegment(video)
+        >>>     video_second_half = video_segment.trim(video_segment.num_frames // 2, video_segment.num_frames)
+        >>>     return video_second_half
+        """
+        if start is not None:
+            start = max(start, 0)
+        if end is not None:
+            end = min(end, self.num_frames)
+
+        return VideoSegment(self.trimmed_video, start, end, self.start)
+
+    def frame_iterator(self) -> Iterator[ImagePatch]:
+        """Returns an iterator over the frames in the video segment.
+
+        Examples
+        -------
+        >>> # Return the frame when the kid kisses the cat
+        >>> def execute_command(video):
+        >>>     video_segment = VideoSegment(video)
+        >>>     for i, frame in enumerate(video_segment.frame_iterator()):
+        >>>         if frame.exists("kid") and frame.exists("cat") and frame.simple_query("Is the kid kissing the cat?") == "yes":
+        >>>             return frame
+        """
+        for i in range(self.num_frames):
+            yield self.frame_from_index(i)
+
+
+You are provided with code which uses an ImagePatch class which answers the query for an image. Modify the function using Python and the VideoSegment class (above) that could be executed to provide an answer to the query for a given video. Collect the result from all the frames and return the answer.
+
+Consider the following guidelines:
+- Use base Python (comparison, sorting) for basic logical operations, left/right/up/down, math, etc.
+- Use the llm_query function to access external information and answer informational questions not concerning the image.
+
+Code: INSERT_IMAGEPATCH_CODE_HERE
+Query: INSERT_QUERY_HERE
