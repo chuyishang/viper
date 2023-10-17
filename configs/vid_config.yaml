@@ -1,0 +1,14 @@
+# For example:
+multiprocessing: False
+execute_code: True
+path_pretrained_models: './pretrained_models'
+dataset:
+    data_path: 'data'
+    split: ''
+    input_type: video
+codex:
+    prompt: ./prompts/mcq_chatapi.prompt
+    model: gpt-4
+blip_v2_model_type: blip2-flan-t5-xxl  # Change to blip2-flan-t5-xl for smaller GPUs
+blip_half_precision: True
+# Add more changes here, following the same format as base_config.yamlcshan

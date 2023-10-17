@@ -1,3 +1,3 @@
 index,sample_id,possible_answers,query_type,query,answer,image_name
-0,0,"['purple', 'red', 'green', 'yellow']",,What color is the flower?,purple,flower.jpeg
-0,0,"['star', 'heart', 'square']",,What shape does the flower resemble?,star,flower.jpeg
+0,0,"['I don't know', 'Moving', 'Static or shaking']",,Is the camera moving or static?,Static or shaking,video_10909.mp4
+0,0,"['Indoors in the kitchen', 'Outdoors', 'Indoors in the living room or bedroom']",,Where is the person?,Indoors in the living room or bedroom,video_10909.mp4
