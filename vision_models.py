@@ -920,6 +920,8 @@ def codex_helper(extended_prompt):
     if config.codex.model in ("gpt-4", "gpt-3.5-turbo"):
         if not isinstance(extended_prompt, list):
             extended_prompt = [extended_prompt]
+        # DEBUG:
+        print("PROMPT:", extended_prompt)
         responses = [openai.ChatCompletion.create(
                 model=config.codex.model,
                 messages=[
@@ -977,7 +979,7 @@ class CodexModel(BaseModel):
             with open(config.fixed_code_file) as f:
                 self.fixed_code = f.read()
 
-    def forward(self, prompt, input_type='image', prompt_file=None, base_prompt=None):
+    def forward(self, prompt, input_type='image', prompt_file=None, base_prompt=None, possible_answers=None):
         if config.use_fixed_code:  # Use the same program for every sample, like in socratic models
             return [self.fixed_code] * len(prompt) if isinstance(prompt, list) else self.fixed_code
 
@@ -986,13 +988,16 @@ class CodexModel(BaseModel):
                 base_prompt = f.read().strip()
         elif base_prompt is None:
             base_prompt = self.base_prompt
-
+        # DEBUG:
+        print("POSSIBLE_ANSWERS:", possible_answers)
         if isinstance(prompt, list):
-            extended_prompt = [base_prompt.replace("INSERT_QUERY_HERE", p).replace('INSERT_TYPE_HERE', input_type)
-                               for p in prompt]
+            # DEBUG:
+            print("PROMPT IS LIST:", prompt)
+            extended_prompt = [base_prompt.replace("INSERT_QUERY_HERE", p).replace('INSERT_TYPE_HERE', input_type).replace('INSERT_OPTIONS_HERE', a) for p, a in zip(prompt, possible_answers)]
         elif isinstance(prompt, str):
+            print("PROMPT IS STRING:", prompt)
             extended_prompt = [base_prompt.replace("INSERT_QUERY_HERE", prompt).
-                               replace('INSERT_TYPE_HERE', input_type)]
+                               replace('INSERT_TYPE_HERE', input_type).replace('INSERT_OPTIONS_HERE', possible_answers)]
         else:
             raise TypeError("prompt must be a string or a list of strings")
 

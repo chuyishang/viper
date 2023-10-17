@@ -20,8 +20,8 @@ class ImagePatch:
         Returns True if the property is met, and False otherwise.
     best_text_match(option_list: List[str], prefix: str)->str
         Returns the string that best matches the image.
-    simple_query(question: str=None)->str
-        Returns the answer to a basic question asked about the image. If no question is provided, returns the answer to "What is this?".
+    simple_query(option_list: List[str]=None, question: str=None)->str
+        Returns the answer to a basic question asked about the image. If an option list is provided, choose the best one from the option list. If no question is provided, returns the answer to "What is this?".
     llm_query(question: str, long_answer: bool)->str
         References a large language model (e.g., GPT) to produce a response to the given question. Default is short-form answers, can be made long-form responses with the long_answer flag.
     compute_depth()->float
@@ -142,17 +142,17 @@ class ImagePatch:
         """
         return best_text_match(self.cropped_image, option_list)
 
-    def simple_query(self, question: str = None, option_list: List[str]) -> str:
+    def simple_query(self, option_list: List[str] = None, question: str = None) -> str:
         """Returns the answer to a basic question asked about the image. If no question is provided, returns the answer
         to "What is this?". The questions are about basic perception, and are not meant to be used for complex reasoning
         or external knowledge.
         Parameters
         -------
-        question : str
-            A string describing the question to be asked.
         option_list : str
             A list with the names of the different options
-
+        question : str
+            A string describing the question to be asked.
+        
         Examples
         -------
 
@@ -179,7 +179,7 @@ class ImagePatch:
         >>>     bar_patch = bar_patches[1]
         >>>     return bar_patch.simple_query("Is the bar quuxy?", ["yes", "no"])
         """
-        return simple_query(self.cropped_image, question)
+        return simple_query(self.cropped_image, question, option_list)
 
     def compute_depth(self):
         """Returns the median depth of the image crop
@@ -338,4 +338,4 @@ Consider the following guidelines:
 - Use base Python (comparison, sorting) for basic logical operations, left/right/up/down, math, etc.
 - Use the llm_query function to access external information and answer informational questions not concerning the image.
 
-Query: INSERT_QUERY_HERE
+Query: INSERT_QUERY_HERE Choose the best answer from the list: INSERT_OPTIONS_HERE

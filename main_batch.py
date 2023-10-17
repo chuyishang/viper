@@ -54,7 +54,7 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
     code = code_header + code
 
     print("===============\n")
-    print("CODE:", code)
+    print("CODE1:", code)
     print("===============\n")
     
     try:
@@ -136,7 +136,6 @@ def main():
         wandb.init(project="viper", config=OmegaConf.to_container(config))
         # log the prompt file
         wandb.save(config.codex.prompt)
-
     dataset = MyDataset(**config.dataset)
 
     with open(config.codex.prompt) as f:
@@ -173,7 +172,7 @@ def main():
                 # TODO compute Codex for next batch as current batch is being processed
 
                 if not config.use_cached_codex:
-                    codes = codex(prompt=batch['query'], base_prompt=base_prompt)
+                    codes = codex(prompt=batch['query'], base_prompt=base_prompt, possible_answers=batch['possible_answers'])
                     # DEBUG:
                     print("=============\n")
                     print("CODES:", codes)
@@ -189,8 +188,9 @@ def main():
                         results = []
                         for c, sample_id, img, possible_answers, query in \
                                 zip(codes, batch['sample_id'], batch['image'], batch['possible_answers'], batch['query']):
+                            # DEBUG:
+                            print("POSSIBLE_ANSWERS: ", possible_answers)
                             result = run_program([c, sample_id, img, possible_answers, query], queues_in, input_type)
-
                             results.append(result)
                             # DEBUG:
                             print("=============\n")
