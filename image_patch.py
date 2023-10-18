@@ -250,16 +250,21 @@ class ImagePatch:
 
         return option_list[selected]
 
-    def simple_query(self, question: str):
+    def simple_query(self, question: str, option_list=None):
         """Returns the answer to a basic question asked about the image. If no question is provided, returns the answer
         to "What is this?". The questions are about basic perception, and are not meant to be used for complex reasoning
         or external knowledge.
         Parameters
         -------
+        option_list : str
+            A list with the names of the different options
         question : str
             A string describing the question to be asked.
         """
-        return self.forward('blip', self.cropped_image, question, task='qa')
+        if not option_list:
+            return self.forward('blip', self.cropped_image, question, task='qa')
+        else:
+            return self.forward('blip', self.cropped_image, question, task='mcq', option_list=None)
 
     def compute_depth(self):
         """Returns the median depth of the image crop

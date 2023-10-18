@@ -1145,7 +1145,15 @@ class BLIPModel(BaseModel):
 
         return generated_text
 
-    def forward(self, image, question=None, task='caption'):
+    # NEW:
+    def mcq(self, image, question, option_list):
+        inputs = self.processor(images=image, text=question, return_tensors="pt", padding="longest").to(self.dev)
+        if self.half_precision:
+            inputs['pixel_values'] = inputs['pixel_values'].half()
+        gen = self.model.predict_class(question, option_list)
+        return gen 
+
+    def forward(self, image, question=None, task='caption', option_list=None):
         if not self.to_batch:
             image, question, task = [image], [question], [task]
 
@@ -1156,10 +1164,13 @@ class BLIPModel(BaseModel):
         prompts_qa = [self.qa_prompt.format(self.pre_question(q)) for q, t in zip(question, task) if t == 'qa']
         images_qa = [im for i, im in enumerate(image) if task[i] == 'qa']
         images_caption = [im for i, im in enumerate(image) if task[i] == 'caption']
+        # NEW:
+        
 
         with torch.cuda.device(self.dev):
             response_qa = self.qa(images_qa, prompts_qa) if len(images_qa) > 0 else []
             response_caption = self.caption(images_caption) if len(images_caption) > 0 else []
+
 
         response = []
         for t in task:
