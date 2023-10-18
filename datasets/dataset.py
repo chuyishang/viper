@@ -30,6 +30,7 @@ class MyDataset(Dataset):
         self.image_transforms = image_transforms
         self.fps = fps
         self.max_num_frames = max_num_frames
+        #self.alt_folder = alt_folder
 
         # Load questions, answers, and image ids
         with open(self.data_path / self.split / 'queries.csv', 'r') as f:

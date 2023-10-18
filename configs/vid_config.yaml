@@ -9,6 +9,7 @@ dataset:
 codex:
     prompt: ./prompts/mcq_chatapi.prompt
     model: gpt-4
-blip_v2_model_type: blip2-flan-t5-xxl  # Change to blip2-flan-t5-xl for smaller GPUs
+    vid_prompt: ./prompts/vid_chatapi.prompt
+blip_v2_model_type: blip2-flan-t5-xl  # Change to blip2-flan-t5-xl for smaller GPUs
 blip_half_precision: True
 # Add more changes here, following the same format as base_config.yamlcshan

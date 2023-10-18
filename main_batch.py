@@ -140,6 +140,8 @@ def main():
 
     with open(config.codex.prompt) as f:
         base_prompt = f.read().strip()
+    with open(config.codex.vid_prompt) as f:
+        vid_prompt = f.read().strip()
 
     codes_all = None
     if config.use_cached_codex:
@@ -172,7 +174,11 @@ def main():
                 # TODO compute Codex for next batch as current batch is being processed
 
                 if not config.use_cached_codex:
-                    codes = codex(prompt=batch['query'], base_prompt=base_prompt, possible_answers=batch['possible_answers'])
+                    # DEBUG:
+                    print("\n=======================")
+                    print("VID_PROMPT:", vid_prompt)
+                    print("\n=======================")
+                    codes = codex(prompt=batch['query'], base_prompt=base_prompt, possible_answers=batch['possible_answers'], vid_prompt=vid_prompt)
                     # DEBUG:
                     print("=============\n")
                     print("CODES:", codes)

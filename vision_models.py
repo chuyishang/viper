@@ -921,7 +921,7 @@ def codex_helper(extended_prompt):
         if not isinstance(extended_prompt, list):
             extended_prompt = [extended_prompt]
         # DEBUG:
-        print("PROMPT:", extended_prompt)
+        # print("PROMPT:", extended_prompt)
         responses = [openai.ChatCompletion.create(
                 model=config.codex.model,
                 messages=[
@@ -979,7 +979,7 @@ class CodexModel(BaseModel):
             with open(config.fixed_code_file) as f:
                 self.fixed_code = f.read()
 
-    def forward(self, prompt, input_type='image', prompt_file=None, base_prompt=None, possible_answers=None):
+    def forward(self, prompt, input_type='image', prompt_file=None, base_prompt=None, possible_answers=None, vid_prompt=None):
         if config.use_fixed_code:  # Use the same program for every sample, like in socratic models
             return [self.fixed_code] * len(prompt) if isinstance(prompt, list) else self.fixed_code
 
@@ -1001,11 +1001,37 @@ class CodexModel(BaseModel):
         else:
             raise TypeError("prompt must be a string or a list of strings")
 
+
+        # DEBUG (THIS WORKS):
+        #print("\n=================================================")
+        #print("EXTENDED PROMPT:")
+        #print(extended_prompt)
+        #print("\n=================================================") 
         result = self.forward_(extended_prompt)
+        
+        # DEBUG:
+        print("RESULT:", result)
         if not isinstance(prompt, list):
             result = result[0]
 
-        return result
+        # EXTRA:
+        print("\n=======================================================")
+        print("RESULT2", result)
+        print("PROMPT2:", prompt)
+        print("\n=======================================================")
+        
+        vid_prompt = [vid_prompt.replace("INSERT_IMAGEPATCH_CODE_HERE", r).replace("INSERT_QUERY_HERE", q) for r,q in zip(result, prompt)]
+        vid_result = self.forward_(vid_prompt)
+        
+        # DEBUG:
+        print("\n==============================================================")
+        print("VID_PROMPT:")
+        print(vid_prompt)
+        print("\n==============================================================") 
+        #return result
+        if not isinstance(prompt, list):
+            vid_result = vid_result[0]
+        return vid_result
 
     def forward_(self, extended_prompt):
         if len(extended_prompt) > self.max_batch_size:
