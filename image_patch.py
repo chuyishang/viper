@@ -480,3 +480,24 @@ def coerce_to_numeric(string, no_string=False):
         # No numeric values. Return input
         return string
     return numeric
+
+def select_answer(memory_bank, query, possible_answers):
+    """Chooses the best answer given a memory bank and a set of possible answers using GPT-3. The input question is always a formatted string with a variable in it.
+
+    Parameters
+    ----------
+    query: str
+        the text question to ask. Must not contain any reference to 'the image' or 'the photo', etc.
+    """
+    # replace this with a config arg next time
+    print("==============\n")
+    print("SELECTING ANSWER")
+    print("QUESTION:", query)
+    print("POSSIBLE_ANSWERS:", possible_answers)
+    print("MEMORY_BANK:", memory_bank)
+    print("==============\n")
+    with open("./prompts/sel_ans.prompt") as f:
+        base_prompt = f.read().strip()
+        new_prompt = base_prompt.replace("insert_question", str(query)).replace("insert_possible_answers", str(possible_answers)).replace("insert_memory_bank", str(memory_bank))
+    
+    return forward(model_name='gpt3_qa', prompt=new_prompt)

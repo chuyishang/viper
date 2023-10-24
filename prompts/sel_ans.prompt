@@ -1,0 +1,27 @@
+You are given a QUESTION about a video, with a list of POSSIBLE_ANSWERS. Information about the video is also stored in the MEMORY_BANK, which contains information about the about the video. This information is captured from individual frames, in order across the video.
+
+Choose the best answer to the question only using information about the video from MEMORY_BANK. 
+
+Consider the following guidelines:
+- Return the index of the correct answer
+- Do not include any other information other than the single index of the correct answer
+- Do not rely on information outside of MEMORY_BANK
+
+You will be given some examples:
+
+Example 1:
+# QUESTION: why did the dog bite on to the human's hand halfway through the video?
+# POSSIBLE_ANSWERS: ['waiting to fetch ball', 'clean its nose', 'playing', 'looking at camera', 'felt the person s hand']
+# MEMORY_BANK: {"Describe the scene where the dog bites the human's hand.": "the dog is bites the human's hand with its mouth", "What was the dog doing before it bit the human's hand?": "The dog was playing with a toy", "What was the dog doing after it bit the human's hand?": "The dog was playing with the human"}
+2
+
+Example 2:
+# QUESTION: how did the man get down from the mountain?
+# POSSIBLE_ANSWERS: [‘parachute’, ‘with ropes’, ‘staircases’, ‘skiing’, ‘sled’]
+# MEMORY_BANK: {‘How did the man get down from the mountain?’: “[‘using a rope’, ‘rope’, ‘using a rope’, ‘using a rope’, ‘climbing down’, ‘climbing’, ‘climbing’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘climbing down’, ‘climbing down’, ‘climbing’, ‘climbing’, ‘using a rope’, ‘climbing down’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘by rappelling’, ‘using a rope’, ‘climbing down’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘using a rope’]“}
+1
+
+Now answer the following:
+# QUESTION: insert_question
+# POSSIBLE_ANSWERS: insert_possible_answers
+# MEMORY_BANK: insert_memory_bank

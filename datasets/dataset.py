@@ -38,7 +38,9 @@ class MyDataset(Dataset):
         #     self.df = pd.read_csv(f, index_col=None, keep_default_na=False)
         print(self.queries_file)
         with open(self.queries_file) as f:
+            print("READING CSV FILE")
             self.df = pd.read_csv(f, index_col=None, keep_default_na=False)
+            print("READ SUCCESSFUL")
         
         if max_samples is not None:
             self.df = self.df.iloc[start_sample:start_sample + max_samples]

@@ -39,22 +39,25 @@ def my_collate(batch):
 
 
 def run_program(parameters, queues_in_, input_type_, retrying=False):
-    from image_patch import ImagePatch, llm_query, best_image_match, distance, bool_to_yesno
+    from image_patch import ImagePatch, llm_query, best_image_match, distance, bool_to_yesno, select_answer
     from video_segment import VideoSegment
 
     global queue_results
+    print("QUEUE_RESULTS\n")
+    print(queue_results)
 
     code, sample_id, image, possible_answers, query = parameters
 
     code_header = f'def execute_command_{sample_id}(' \
                   f'{input_type_}, possible_answers, query, ' \
                   f'ImagePatch, VideoSegment, ' \
-                  'llm_query, bool_to_yesno, distance, best_image_match):\n' \
+                  'llm_query, bool_to_yesno, distance, best_image_match, select_answer):\n' \
                   f'    # Answer is:'
     code = code_header + code
 
     print("===============\n")
-    print("CODE:", code)
+    print("CODE:\n")
+    print(code)
     print("===============\n")
     
     try:
@@ -71,6 +74,8 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
             return None, code
 
     queues = [queues_in_, queue_results]
+    print("QUEUES_IN\n")
+    print(queues)
 
     image_patch_partial = partial(ImagePatch, queues=queues)
     video_segment_partial = partial(VideoSegment, queues=queues)
@@ -83,7 +88,7 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
             # Classes to be used
             image_patch_partial, video_segment_partial,
             # Functions to be used
-            llm_query_partial, bool_to_yesno, distance, best_image_match)
+            llm_query_partial, bool_to_yesno, distance, best_image_match, select_answer)
     except Exception as e:
         # print full traceback
         traceback.print_exc()
@@ -211,6 +216,11 @@ def main():
                 all_codes += [r[1] for r in results]
                 all_ids += batch['sample_id']
                 all_answers += batch['answer']
+                
+                # DEBUG:
+                print("TYPES")
+                print(type(all_answers[0]), type(all_results[0]))
+
                 all_possible_answers += batch['possible_answers']
                 all_query_types += batch['query_type']
                 all_querys += batch['query']

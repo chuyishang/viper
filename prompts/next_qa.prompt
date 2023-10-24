@@ -56,7 +56,7 @@ class ImagePatch:
     -------
     find(object_name: str)->List[ImagePatch]
         Returns a list of new ImagePatch objects containing crops of the image centered around any objects found in the
-        image matching the object_name.
+        image matching the object_name. If the list is empty, just return a list with the current image without any cropping.
     exists(object_name: str)->bool
         Returns True if the object specified by object_name is found in the image, and False otherwise.
     verify_property(object: str, property: str)->bool
@@ -122,6 +122,7 @@ def execute_command(video, possible_answers, query):
     last_frame = video_segment.frame_from_index(-1)
     last_caption = last_frame.simple_query("What is this?")
     men = last_frame.find("man")
+    print(len(men))
     if len(men) == 0:
         men = [last_frame]
     man = men[0]
@@ -189,6 +190,9 @@ def execute_command(video, possible_answers, query) -> str:
     before_hold_ball_description = []
     for frame in video_segment.frame_iterator():
         baby_patch = frame.find(""baby"")[0]
+        print(len(baby_patch))
+        if len(baby_patch) == 0:
+            baby_patch = [frame]
         if baby_patch.simple_query(""Is the baby holding a ball?"") == 'no':
             before_hold_ball_description.append(baby_patch.simple_query(""Describe in detail, What is the baby doing?""))
         else:
@@ -197,6 +201,9 @@ def execute_command(video, possible_answers, query) -> str:
     baby_move_forward_reason = []
     for frame in video_segment.frame_iterator():
         baby_patch = frame.find(""baby"")[0]
+        print(len(baby_patch))
+        if len(baby_patch) == 0:
+            baby_patch = [frame]
         if baby_patch.simple_query(""Is the baby holding a ball and moving forward?"") == 'yes':
             baby_move_forward_reason.append(baby_patch.simple_query(""Describe in detail, Why is the baby moving forward?""))
         else:
@@ -239,7 +246,7 @@ def execute_command(video, possible_answers, query) -> str:
 ​
 ​
 Don't return long strings like "unknown", "I don't know" "doesn't exist"!!! If such thing happens, you should instead use image_patch.simple_query(query) as the last returning logic.
-Now, Only answer with a single function starting def execute_command!
+Now, only answer with a single function starting def execute_command!
 Remember to always call answer = select_answer(memory_bank, query, possible_answers) and finally return answer in the end!
 ​
 - Only uses the provided APIs!!
