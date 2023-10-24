@@ -6,7 +6,6 @@ from functools import partial
 import warnings
 import traceback
 
-
 import pandas as pd
 import torch.multiprocessing as mp
 from joblib import Memory
@@ -20,6 +19,9 @@ from tqdm import tqdm
 from configs import config
 from utils import seed_everything
 import datasets
+
+print("CUDA VISIBLE DEVICES:")
+print(os.environ["CUDA_VISIBLE_DEVICES"])
 
 # See https://github.com/pytorch/pytorch/issues/11201, https://github.com/pytorch/pytorch/issues/973
 # Not for dataloader, but for multiprocessing batches
@@ -55,10 +57,10 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
                   f'    # Answer is:'
     code = code_header + code
 
-    print("===============\n")
-    print("CODE:\n")
-    print(code)
-    print("===============\n")
+    # print("===============\n")
+    # print("CODE:\n")
+    # print(code)
+    # print("===============\n")
     
     try:
         exec(compile(code, 'Codex', 'exec'), globals())
@@ -105,7 +107,11 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
     # libraries for some reason. Because defining it globally is not ideal, we just delete it after running it.
     if f'execute_command_{sample_id}' in globals():
         del globals()[f'execute_command_{sample_id}']  # If it failed to compile the code, it won't be defined
-    return result, code
+
+    # testing
+    print("RESULT:", result[0])
+    print("MEMORY:", result[1])
+    return result[0], code, result[1]
 
 
 def worker_init(queue_results_):
@@ -166,6 +172,7 @@ def main():
     all_img_paths = []
     all_possible_answers = []
     all_query_types = []
+    all_memory = []
 
     with mp.Pool(processes=num_processes, initializer=worker_init, initargs=(queues_results,)) \
             if config.multiprocessing else open(os.devnull, "w") as pool:
@@ -216,6 +223,9 @@ def main():
                 all_codes += [r[1] for r in results]
                 all_ids += batch['sample_id']
                 all_answers += batch['answer']
+
+                # TEST
+                all_memory += [r[2] for r in results]
                 
                 # DEBUG:
                 print("TYPES")
@@ -262,8 +272,8 @@ def main():
                                                  str.isnumeric(ef.stem.split('_')[-1])]) + 1) + '.csv'
         print('Saving results to', filename)
         df = pd.DataFrame([all_results, all_answers, all_codes, all_ids, all_querys, all_img_paths,
-                           all_possible_answers]).T
-        df.columns = ['result', 'answer', 'code', 'id', 'query', 'img_path', 'possible_answers']
+                           all_possible_answers, all_memory]).T
+        df.columns = ['result', 'answer', 'code', 'id', 'query', 'img_path', 'possible_answers', 'memory']
         # make the result column a string
         df['result'] = df['result'].apply(str)
         df.to_csv(results_dir / filename, header=True, index=False, encoding='utf-8')

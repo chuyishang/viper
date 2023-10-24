@@ -500,4 +500,4 @@ def select_answer(memory_bank, query, possible_answers):
         base_prompt = f.read().strip()
         new_prompt = base_prompt.replace("insert_question", str(query)).replace("insert_possible_answers", str(possible_answers)).replace("insert_memory_bank", str(memory_bank))
     
-    return forward(model_name='gpt3_qa', prompt=new_prompt)
+    return forward(model_name='gpt3_qa', prompt=new_prompt), memory_bank

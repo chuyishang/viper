@@ -148,7 +148,7 @@ def execute_command(video, possible_answers, query) -> str:
     for frame in video_segment.frame_iterator():  
         people = frame.find("person")
         for person in people:
-            if person.simple_query("Previous Info:"+str(memory_bank)+"\nBased on the provided information, does this person match the description?") == 'yes':
+            if person.simple_query("Previous Info:"+ person_drinking_description +"\nBased on the provided information, does this person match the description?") == 'yes':
                 person_direction_end = person.simple_query("Which direction is the person walking?")
                 break
     memory_bank = {

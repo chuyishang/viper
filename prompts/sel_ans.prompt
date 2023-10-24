@@ -10,15 +10,21 @@ Consider the following guidelines:
 You will be given some examples:
 
 Example 1:
-# QUESTION: why did the dog bite on to the human's hand halfway through the video?
-# POSSIBLE_ANSWERS: ['waiting to fetch ball', 'clean its nose', 'playing', 'looking at camera', 'felt the person s hand']
-# MEMORY_BANK: {"Describe the scene where the dog bites the human's hand.": "the dog is bites the human's hand with its mouth", "What was the dog doing before it bit the human's hand?": "The dog was playing with a toy", "What was the dog doing after it bit the human's hand?": "The dog was playing with the human"}
-2
+# QUESTION: why does the boy removes goggles after hitting for first time?
+# POSSIBLE_ANSWERS: ['catch his balance', 'to show man', 'take water out of nose', 'wipe water off', 'to get up']
+# MEMORY_BANK: {'What was the boy doing before hitting for the first time?': "['swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'playing baseball', 'swinging a bat', 'playing baseball', 'playing baseball', 'playing baseball']", 'What was the boy doing after hitting for the first time?': "['swinging a bat', 'playing baseball', 'swinging a bat', 'playing baseball', 'throwing a frisbee', 'throwing a baseball', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'swinging a bat', 'throwing a frisbee', 'throwing a frisbee', 'swinging a bat']"}
+3
 
 Example 2:
 # QUESTION: how did the man get down from the mountain?
 # POSSIBLE_ANSWERS: [‘parachute’, ‘with ropes’, ‘staircases’, ‘skiing’, ‘sled’]
 # MEMORY_BANK: {‘How did the man get down from the mountain?’: “[‘using a rope’, ‘rope’, ‘using a rope’, ‘using a rope’, ‘climbing down’, ‘climbing’, ‘climbing’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘climbing down’, ‘climbing down’, ‘climbing’, ‘climbing’, ‘using a rope’, ‘climbing down’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘by rappelling’, ‘using a rope’, ‘climbing down’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘using a rope’]“}
+1
+
+Example 3:
+# QUESTION: what did the boy in blue do after he turned his head behind at the middle?
+# POSSIBLE_ANSWERS: ['smiling', 'following him', 'continue playing with toy', 'walk', 'scroll his computer']
+# MEMORY_BANK: {'Describe the boy in blue who turned his head behind at the middle?': 'a boy', 'What did the described boy do after he turned his head behind?': 'playing'}
 1
 
 Now answer the following:
