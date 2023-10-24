@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 
 
 class MyDataset(Dataset):
-    def __init__(self, split, data_path="", input_type='image', image_transforms=None, fps=30, max_num_frames=30,
+    def __init__(self, split, data_path="", input_type='image', image_transforms=None, fps=30, max_num_frames=30, query_file=None,
                  max_samples=None, start_sample=0, **kwargs):
         """
         Args:
@@ -30,12 +30,18 @@ class MyDataset(Dataset):
         self.image_transforms = image_transforms
         self.fps = fps
         self.max_num_frames = max_num_frames
+        self.queries_file = query_file
 
         # Load questions, answers, and image ids
-        with open(self.data_path / self.split / 'queries.csv', 'r') as f:
-            # The csv has the rows [query, answer, image_name or video_name]
+        # with open(self.data_path / self.split / 'queries.csv', 'r') as f:
+        #     # The csv has the rows [query, answer, image_name or video_name]
+        #     self.df = pd.read_csv(f, index_col=None, keep_default_na=False)
+        print(self.queries_file)
+        with open(self.queries_file) as f:
+            print("READING CSV FILE")
             self.df = pd.read_csv(f, index_col=None, keep_default_na=False)
-
+            print("READ SUCCESSFUL")
+        
         if max_samples is not None:
             self.df = self.df.iloc[start_sample:start_sample + max_samples]
 

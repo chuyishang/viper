@@ -1,0 +1,33 @@
+You are given a QUESTION about a video, with a list of POSSIBLE_ANSWERS. Information about the video is also stored in the MEMORY_BANK, which contains information about the about the video. This information is captured from individual frames, in order across the video.
+
+Choose the best answer to the question only using information about the video from MEMORY_BANK. 
+
+Consider the following guidelines:
+- Return the index of the correct answer
+- Do not include any other information other than the single index of the correct answer
+- Do not rely on information outside of MEMORY_BANK
+
+You will be given some examples:
+
+Example 1:
+# QUESTION: why does the boy removes goggles after hitting for first time?
+# POSSIBLE_ANSWERS: ['catch his balance', 'to show man', 'take water out of nose', 'wipe water off', 'to get up']
+# MEMORY_BANK: {'What was the boy doing before hitting for the first time?': "['swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'swinging a bat', 'playing baseball', 'swinging a bat', 'playing baseball', 'playing baseball', 'playing baseball']", 'What was the boy doing after hitting for the first time?': "['swinging a bat', 'playing baseball', 'swinging a bat', 'playing baseball', 'throwing a frisbee', 'throwing a baseball', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'throwing a frisbee', 'swinging a bat', 'throwing a frisbee', 'throwing a frisbee', 'swinging a bat']"}
+3
+
+Example 2:
+# QUESTION: how did the man get down from the mountain?
+# POSSIBLE_ANSWERS: [‘parachute’, ‘with ropes’, ‘staircases’, ‘skiing’, ‘sled’]
+# MEMORY_BANK: {‘How did the man get down from the mountain?’: “[‘using a rope’, ‘rope’, ‘using a rope’, ‘using a rope’, ‘climbing down’, ‘climbing’, ‘climbing’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘climbing down’, ‘climbing down’, ‘climbing’, ‘climbing’, ‘using a rope’, ‘climbing down’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘by rappelling’, ‘using a rope’, ‘climbing down’, ‘using a rope’, ‘using a rope’, ‘using a rope’, ‘using a rope’]“}
+1
+
+Example 3:
+# QUESTION: what did the boy in blue do after he turned his head behind at the middle?
+# POSSIBLE_ANSWERS: ['smiling', 'following him', 'continue playing with toy', 'walk', 'scroll his computer']
+# MEMORY_BANK: {'Describe the boy in blue who turned his head behind at the middle?': 'a boy', 'What did the described boy do after he turned his head behind?': 'playing'}
+1
+
+Now answer the following:
+# QUESTION: insert_question
+# POSSIBLE_ANSWERS: insert_possible_answers
+# MEMORY_BANK: insert_memory_bank

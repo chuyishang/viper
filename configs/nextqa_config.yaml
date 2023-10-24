@@ -3,7 +3,13 @@ multiprocessing: False
 execute_code: True
 path_pretrained_models: './pretrained_models'
 dataset:
-    data_path: 'data'
+    data_path: '/shared/shang/datasets/nextqa'
+    input_type: 'video'
+    query_file: '/shared/shang/datasets/nextqa/metadata/query_single.csv'
+codex:
+  prompt: ./prompts/next_qa.prompt
+  
+  model: gpt-4
 blip_v2_model_type: blip2-flan-t5-xl  # Change to blip2-flan-t5-xl for smaller GPUs
 blip_half_precision: True
 # Add more changes here, following the same format as base_config.yaml
