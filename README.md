@@ -1,5 +1,7 @@
 # ViperGPT: Visual Inference via Python Execution for Reasoning
 
+base branch, no modifications. storing as branch just in case need to revert
+
 This is the code for the paper [ViperGPT: Visual Inference via Python Execution for Reasoning](https://viper.cs.columbia.edu) by [Dídac Surís](https://www.didacsuris.com/)\*, [Sachit Menon](https://sachit-menon.github.io/)\* and [Carl Vondrick](https://www.cs.columbia.edu/~vondrick/).
 
 ![teaser](teaser.gif "Teaser")
