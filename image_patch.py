@@ -481,7 +481,7 @@ def coerce_to_numeric(string, no_string=False):
         return string
     return numeric
 
-def select_answer(memory_bank, query, possible_answers):
+def select_answer(memory_bank, query, possible_answers, queues=None):
     """Chooses the best answer given a memory bank and a set of possible answers using GPT-3. The input question is always a formatted string with a variable in it.
 
     Parameters
@@ -500,4 +500,4 @@ def select_answer(memory_bank, query, possible_answers):
         base_prompt = f.read().strip()
         new_prompt = base_prompt.replace("insert_question", str(query)).replace("insert_possible_answers", str(possible_answers)).replace("insert_memory_bank", str(memory_bank))
     
-    return forward(model_name='gpt3_qa', prompt=new_prompt), memory_bank
+    return forward(model_name='gpt3_qa', prompt=new_prompt, queues=queues), memory_bank

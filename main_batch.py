@@ -20,8 +20,8 @@ from configs import config
 from utils import seed_everything
 import datasets
 
-print("CUDA VISIBLE DEVICES:")
-print(os.environ["CUDA_VISIBLE_DEVICES"])
+# print("CUDA VISIBLE DEVICES:")
+# print(os.environ["CUDA_VISIBLE_DEVICES"])
 
 # See https://github.com/pytorch/pytorch/issues/11201, https://github.com/pytorch/pytorch/issues/973
 # Not for dataloader, but for multiprocessing batches
@@ -45,7 +45,8 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
     from video_segment import VideoSegment
 
     global queue_results
-    print("QUEUE_RESULTS\n")
+    
+    print("QUEUE_RESULTS")
     print(queue_results)
 
     code, sample_id, image, possible_answers, query = parameters
@@ -76,12 +77,14 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
             return None, code
 
     queues = [queues_in_, queue_results]
-    print("QUEUES_IN\n")
+
+    print("QUEUES_IN")
     print(queues)
 
     image_patch_partial = partial(ImagePatch, queues=queues)
     video_segment_partial = partial(VideoSegment, queues=queues)
     llm_query_partial = partial(llm_query, queues=queues)
+    select_answer_partial = partial(select_answer, queues=queues)
 
     try:
         result = globals()[f'execute_command_{sample_id}'](
@@ -90,7 +93,8 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
             # Classes to be used
             image_patch_partial, video_segment_partial,
             # Functions to be used
-            llm_query_partial, bool_to_yesno, distance, best_image_match, select_answer)
+            # llm_query_partial, bool_to_yesno, distance, best_image_match, select_answer)
+            llm_query_partial, bool_to_yesno, distance, best_image_match, select_answer_partial)
     except Exception as e:
         # print full traceback
         traceback.print_exc()
@@ -108,17 +112,21 @@ def run_program(parameters, queues_in_, input_type_, retrying=False):
     if f'execute_command_{sample_id}' in globals():
         del globals()[f'execute_command_{sample_id}']  # If it failed to compile the code, it won't be defined
 
+    # result will be a tuple, with ('answer', memory_bank) 
     # testing
-    print("RESULT:", result[0])
-    print("MEMORY:", result[1])
-    return result[0], code, result[1]
+    if result:
+        print("RESULT:", result[0])
+        print("MEMORY:", result[1])
+        # returns in the format ('answer', code, 'memory_bank')
+        return result[0], code, result[1]
+    else:
+        return result, code, None
 
 
 def worker_init(queue_results_):
     global queue_results
     index_queue = mp.current_process()._identity[0] % len(queue_results_)
     queue_results = queue_results_[index_queue]
-
 
 def main():
     mp.set_start_method('spawn')
@@ -183,6 +191,9 @@ def main():
 
                 # Combine all querys and get Codex predictions for them
                 # TODO compute Codex for next batch as current batch is being processed
+                
+                print("BATCH INFO:")
+                print(batch)
 
                 if not config.use_cached_codex:
                     codes = codex(prompt=batch['query'], base_prompt=base_prompt)
@@ -205,9 +216,9 @@ def main():
 
                             results.append(result)
                             # DEBUG:
-                            print("=============\n")
-                            print("RESULT", result)
-                            print("=============\n")
+                            # print("=============\n")
+                            # print("RESULT", result)
+                            # print("=============\n")
                     else:
                         results = list(pool.imap(partial(
                             run_program, queues_in_=queues_in, input_type_=input_type),
@@ -219,14 +230,18 @@ def main():
                                   "model can be dangerous. Set the flag 'execute_code' to True if you want to execute "
                                   "it.")
 
-                all_results += [r[0] for r in results]
-                all_codes += [r[1] for r in results]
+                print("=======================")
+                print("FINAL RESULTS LIST:")
+                print(results)
+                print("=======================")
+
+                all_results += [str(r[0]) if r else None for r in results]
+                all_codes += [r[1] if r else None for r in results]
                 all_ids += batch['sample_id']
                 all_answers += batch['answer']
-
                 # TEST
-                all_memory += [r[2] for r in results]
-                
+                all_memory += [r[2] if r else None for r in results]
+            
                 # DEBUG:
                 print("TYPES")
                 print(type(all_answers[0]), type(all_results[0]))
